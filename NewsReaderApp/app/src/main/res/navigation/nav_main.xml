@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/homeFragment">
+
+    <!-- Home: always installed (:feature-home) -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.sandeep.newsreader.feature.home.HomeFragment"
+        android:label="Home" />
+
+    <!-- Search: always installed (:feature-search) -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.sandeep.newsreader.feature.search.SearchFragment"
+        android:label="Search" />
+
+    <!--
+        Bookmarks, AI Chat, AI Explorer: on-demand dynamic modules.
+        These destinations are only navigated to AFTER the module is installed.
+        Navigation happens programmatically from the install flow, not from this graph.
+    -->
+
+</navigation>

@@ -8,7 +8,7 @@ Daily log of what has been implemented and what is remaining.
 
 | Module | Topic | Status | Started | Completed |
 |--------|-------|--------|---------|-----------|
-| 01 | Multi-Module Project Setup | 🔲 Not started | — | — |
+| 01 | Multi-Module Project Setup | ✅ Done | 2026-07-01 | 2026-07-01 |
 | 02 | Single Activity & Navigation | 🔲 Not started | — | — |
 | 03 | Core Module & Shared Architecture | 🔲 Not started | — | — |
 | 04 | Hilt DI (Multi-Module) | 🔲 Not started | — | — |
@@ -16,29 +16,36 @@ Daily log of what has been implemented and what is remaining.
 | 06 | Conditional Delivery & Module Removal | 🔲 Not started | — | — |
 | 07 | Build, Sign & Ship the AAB | 🔲 Not started | — | — |
 
-**Overall progress: 0 / 9 modules complete**
+**Overall progress: 1 / 9 modules complete**
 
 ---
 
 ## What is Implemented
 
-_Nothing yet — start with Module 01!_
+### ✅ Module 01 — Multi-Module Project Setup
+- [x] `settings.gradle.kts` — all 8 modules declared
+- [x] `gradle/libs.versions.toml` — central version catalog (AGP 8.5, Kotlin 2.0, Hilt 2.51, Navigation 2.8)
+- [x] Root `build.gradle.kts` — plugin declarations without activation
+- [x] `:app/build.gradle.kts` — `dynamicFeatures` list wiring all 4 dynamic modules
+- [x] `:core/build.gradle.kts` — shared library with Retrofit, Hilt, Coroutines
+- [x] `core/model/Article.kt` — shared `Article` data class + `Category` enum
+- [x] `core/common/Result.kt` — `Result<T>` and `UiState<T>` sealed classes
+- [x] `:feature-home` and `:feature-search` — install-time library stubs
+- [x] `MainActivity.kt` — Single Activity with NavController + BottomNavigationView
+- [x] `NewsReaderApp.kt` — `@HiltAndroidApp` Application class
+- [x] `activity_main.xml` — `FragmentContainerView` + `BottomNavigationView`
+- [x] `nav_main.xml` — NavGraph with home and search destinations
+- [x] `:feature-bookmarks` — on-demand dynamic feature (`<dist:on-demand/>`)
+- [x] `:feature-premium` — conditional dynamic feature (`<dist:min-sdk value="26"/>`)
+- [x] `:feature-ai-chat` — on-demand dynamic feature
+- [x] `:feature-ai-explorer` — on-demand dynamic feature
+- [x] Module 01 README with concepts explained
 
 ---
 
 ## What is Remaining
 
-### 🔲 Module 01 — Multi-Module Project Setup
-- [ ] Theory: monolith vs multi-module trade-offs
-- [ ] Theory: module types (`application`, `library`, `dynamic-feature`)
-- [ ] `settings.gradle.kts` — declaring all modules
-- [ ] `libs.versions.toml` — version catalog setup
-- [ ] `:app/build.gradle.kts` with `dynamicFeatures` list
-- [ ] `:core/build.gradle.kts` as android library
-- [ ] `:feature-home/build.gradle.kts` as android library
-- [ ] `:feature-bookmarks/build.gradle.kts` as dynamic-feature
-- [ ] Module dependency graph diagram
-- [ ] README + PDF learning guide
+### ✅ Module 01 — Multi-Module Project Setup _(complete)_
 
 ### 🔲 Module 02 — Single Activity & Navigation
 - [ ] `MainActivity` with `NavHostFragment`
@@ -171,9 +178,15 @@ _Nothing yet — start with Module 01!_
 
 ### 2026-07-01
 - Initialized the project and pushed to GitHub
-- Created 7-module learning plan
+- Created learning plan (8 modules + Module 09 sub-modules)
 - Created HLD (full system architecture) and LLD (per-module diagrams)
 - Set up PROGRESS.md and daily reminder workflow
+- Completed Module 01: Multi-Module Project Setup
+  - Full Gradle skeleton: settings.gradle.kts, libs.versions.toml, per-module build files
+  - All 8 modules declared: :app, :core, 2 library features, 4 dynamic features
+  - Single Activity (MainActivity) + NavController + BottomNavigationView wired
+  - Shared Article model and Result<T>/UiState<T> in :core
+  - Dynamic feature manifests with correct delivery mode per module
 
 ---
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution">
+
+    <!--
+        on-demand: this module is NOT included in the base APK.
+        It is downloaded only when the user requests it via SplitInstallManager.
+        fusing=true: on devices with older Play Store, the module is fused into the APK.
+    -->
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_feature_bookmarks">
+        <dist:delivery>
+            <dist:on-demand />
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+</manifest>

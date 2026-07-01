@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution">
+
+    <!--
+        Conditional delivery: only delivered to devices that meet ALL conditions.
+        Condition 1: minSdk >= 26 (Android 8.0+)
+        If conditions are not met, the module is never sent to the device.
+    -->
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_feature_premium">
+        <dist:delivery>
+            <dist:install-time>
+                <dist:conditions>
+                    <dist:min-sdk dist:value="26" />
+                </dist:conditions>
+            </dist:install-time>
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+</manifest>
