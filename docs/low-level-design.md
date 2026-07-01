@@ -382,3 +382,201 @@ flowchart TD
 
 **Key files:** `ChatFragment.kt`, `ChatViewModel.kt`, `MediaPipeChatRepository.kt`,
 `GeminiNanoChatRepository.kt`, `ChatRepositoryFactory.kt`, `feature-ai-chat/AndroidManifest.xml`
+
+---
+
+## Module 09 — On-Device AI Model Explorer
+
+### Overall UI structure
+
+```mermaid
+flowchart TD
+    ENTRY["AI Explorer Entry\n(check which engines are available)"]
+
+    ENTRY --> TABS["TabLayout + ViewPager2\nML Kit | MediaPipe | TFLite | Gemini Nano | ONNX | Benchmark"]
+
+    TABS --> A["09-A\nML Kit\nPlayground"]
+    TABS --> B["09-B\nMediaPipe\nPlayground"]
+    TABS --> C["09-C\nTFLite\nPlayground"]
+    TABS --> D["09-D\nGemini Nano\n(Pixel 8+ only)"]
+    TABS --> E["09-E\nONNX Runtime\nPlayground"]
+    TABS --> F["09-F\nBenchmark\nAll Models"]
+
+    D -->|device not supported| FALLBACK["'Not available on this device'\nFallback card shown"]
+```
+
+---
+
+### 09-A ML Kit Playground
+
+```mermaid
+flowchart TD
+    INPUT["EditText\nPaste any text"] --> CHIPS["ChipGroup\nClassify | Extract | Reply | Identify | Translate"]
+
+    CHIPS -->|Classify| TC["TextClassifier\nML Kit on-device\n< 50ms"]
+    CHIPS -->|Extract| EE["EntityExtractor\nURLs, phones, addresses\n< 30ms"]
+    CHIPS -->|Reply| SR["SmartReply\n3 reply suggestions\n< 80ms"]
+    CHIPS -->|Identify| LI["LanguageIdentifier\nreturns BCP-47 tag + confidence\n< 20ms"]
+    CHIPS -->|Translate| TR["Translator\ndownload language model if needed\nthen translate on-device"]
+
+    TC --> OUT["ResultCard\nshows output + inference time"]
+    EE --> OUT
+    SR --> OUT
+    LI --> OUT
+    TR --> OUT
+```
+
+---
+
+### 09-B MediaPipe Playground
+
+```mermaid
+flowchart TD
+    subgraph CAMERA["CameraX Preview"]
+        FRAME["ImageProxy frame\n@ 30fps"]
+    end
+
+    TOGGLE["ToggleButtonGroup\nObject | Face | Hand | Gesture"]
+
+    TOGGLE -->|Object| OD["ObjectDetector\nMediaPipe Tasks\ndraws bounding boxes"]
+    TOGGLE -->|Face| FL["FaceLandmarker\n478 landmarks\ndraws mesh overlay"]
+    TOGGLE -->|Hand| HL["HandLandmarker\n21 points per hand\ndraws skeleton"]
+    TOGGLE -->|Gesture| GR["GestureRecognizer\nthumb up, pointing, ok...\nshows label + confidence"]
+
+    FRAME --> OD
+    FRAME --> FL
+    FRAME --> HL
+    FRAME --> GR
+
+    OD --> OVERLAY["Canvas Overlay\ndrawn on top of preview"]
+    FL --> OVERLAY
+    HL --> OVERLAY
+    GR --> OVERLAY
+```
+
+---
+
+### 09-C TFLite Playground
+
+```mermaid
+flowchart TD
+    DEMO_SELECT["Demo Selector\nImage Class | SMS Spam | URL Phishing"]
+
+    subgraph IMAGE["MobileNet V3 — Image Classification"]
+        IMG_IN["Pick photo from gallery"] --> PREPROC["Resize to 224x224\nNormalize pixels"]
+        PREPROC --> INTERP["TFLite Interpreter\nGPU delegate if available"]
+        INTERP --> TOP5["Top-5 labels + confidence"]
+    end
+
+    subgraph SMS["MobileBERT — SMS Spam Detection"]
+        SMS_IN["Type or paste SMS text"] --> TOKENIZE["WordPiece tokenizer\nmax 128 tokens"]
+        TOKENIZE --> BERT["MobileBERT TFLite\n~100 MB, CPU inference"]
+        BERT --> SCORE["spam probability 0.0-1.0"]
+    end
+
+    subgraph URL["Custom TFLite — URL Phishing"]
+        URL_IN["Paste URL"] --> FEAT["UrlFeatureExtractor\n20 numerical features"]
+        FEAT --> SMALL["Small dense model\n~3 MB, < 5ms"]
+        SMALL --> RISK["risk score + SAFE/MALICIOUS label"]
+    end
+
+    DEMO_SELECT --> IMAGE
+    DEMO_SELECT --> SMS
+    DEMO_SELECT --> URL
+```
+
+---
+
+### 09-D Gemini Nano (AICore)
+
+```mermaid
+flowchart TD
+    LAUNCH["Tab opened"] --> AVAIL["GenerativeModel\n.checkAvailability(context)"]
+
+    AVAIL -->|AVAILABLE| READY["Show input UI"]
+    AVAIL -->|DOWNLOADING| PROG["Show download progress\n(system is pulling Gemini Nano)"]
+    AVAIL -->|UNAVAILABLE| CARD["'Gemini Nano requires Pixel 8+\nor Samsung S24+'\nShow MediaPipe fallback option"]
+
+    READY --> DEMO["Demo Selector\nSummarise | Proofread | Chat"]
+
+    DEMO -->|Summarise| SUM["generateContent(article)\nreturn 3-bullet summary"]
+    DEMO -->|Proofread| PROOF["generateContent(text)\nreturn corrected version + diff"]
+    DEMO -->|Chat| CHAT["startChat(history)\nsendMessageStream(input)\nstream tokens to UI"]
+
+    SUM --> OUT["Output panel\nresult + latency"]
+    PROOF --> OUT
+    CHAT --> OUT
+```
+
+---
+
+### 09-E ONNX Runtime Playground
+
+```mermaid
+flowchart TD
+    DEMO_SEL["Demo Selector\nWhisper STT | Sentence Similarity"]
+
+    subgraph STT["Whisper Tiny — Speech to Text"]
+        MIC["Record audio\n(AudioRecord, 16kHz mono)"]
+        MEL["Compute Mel spectrogram\n80 mel bins x 3000 frames"]
+        WHISPER["Whisper Tiny ONNX\n~150 MB"]
+        TRANS["Transcribed text"]
+        MIC --> MEL --> WHISPER --> TRANS
+    end
+
+    subgraph SIM["Sentence Transformer — Semantic Similarity"]
+        TEXT1["Input sentence A"]
+        TEXT2["Input sentence B"]
+        EMBED1["all-MiniLM-L6 ONNX\n384-dim embedding"]
+        EMBED2["all-MiniLM-L6 ONNX\n384-dim embedding"]
+        COS["Cosine similarity score\n0.0 (unrelated) to 1.0 (identical)"]
+        TEXT1 --> EMBED1 --> COS
+        TEXT2 --> EMBED2 --> COS
+    end
+
+    DEMO_SEL --> STT
+    DEMO_SEL --> SIM
+```
+
+---
+
+### 09-F Benchmark Screen
+
+```mermaid
+flowchart TD
+    INPUT["Fixed benchmark input\n'Apple today announced a new iPhone...'"]
+
+    INPUT --> RUN["Run all available models\nsequentially on IO dispatcher"]
+
+    RUN --> R1["ML Kit TextClassifier\nlatency + label"]
+    RUN --> R2["MediaPipe TextClassifier\nlatency + label"]
+    RUN --> R3["MobileBERT TFLite\nlatency + label"]
+    RUN --> R4["Gemini Nano\nlatency + summary (if available)"]
+    RUN --> R5["ONNX MiniLM\nlatency + embedding"]
+
+    R1 --> TABLE["BenchmarkResultTable\nModel | Output | Cold start | Warm | RAM | Size"]
+    R2 --> TABLE
+    R3 --> TABLE
+    R4 --> TABLE
+    R5 --> TABLE
+
+    TABLE --> RECOMMEND["Recommendation card\n'For your use case, use X because...'"]
+```
+
+---
+
+### Device capability matrix (shown in-app)
+
+| Model | Emulator | Mid-range (6 GB) | Pixel 8 | Pixel 8 Pro |
+|-------|----------|-----------------|---------|-------------|
+| ML Kit | ✅ Fast | ✅ Fast | ✅ Fast | ✅ Fast |
+| MediaPipe Tasks | ✅ OK | ✅ OK | ✅ Fast | ✅ Fast |
+| Gemma 2B (MediaPipe) | ⚠️ Very slow | ✅ Usable | ✅ Fast | ✅ Fastest |
+| TFLite MobileNet | ✅ OK | ✅ Fast | ✅ Fast (GPU) | ✅ Fastest |
+| MobileBERT TFLite | ⚠️ Slow | ✅ OK | ✅ Fast | ✅ Fast |
+| Gemini Nano | ❌ | ❌ | ✅ | ✅ |
+| Whisper ONNX | ⚠️ Slow | ✅ OK | ✅ Fast | ✅ Fast |
+
+**Key files:** `AiExplorerFragment.kt`, `MlKitPlaygroundFragment.kt`, `MediaPipePlaygroundFragment.kt`,
+`TflitePlaygroundFragment.kt`, `GeminiNanoFragment.kt`, `OnnxPlaygroundFragment.kt`,
+`BenchmarkFragment.kt`, `AiExplorerViewModel.kt`

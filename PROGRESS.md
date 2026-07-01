@@ -16,7 +16,7 @@ Daily log of what has been implemented and what is remaining.
 | 06 | Conditional Delivery & Module Removal | 🔲 Not started | — | — |
 | 07 | Build, Sign & Ship the AAB | 🔲 Not started | — | — |
 
-**Overall progress: 0 / 8 modules complete**
+**Overall progress: 0 / 9 modules complete**
 
 ---
 
@@ -112,6 +112,58 @@ _Nothing yet — start with Module 01!_
 - [ ] Inference on `Dispatchers.IO` — never block main thread
 - [ ] Test with Gemma 2B model on emulator / real device
 - [ ] README + PDF learning guide
+
+### 🔲 Module 09 — On-Device AI Model Explorer
+
+#### 09-A: ML Kit Playground
+- [ ] Theory: ML Kit architecture, on-device vs cloud models
+- [ ] Text Classification — classify news article category
+- [ ] Entity Extraction — extract URLs, phones, addresses from text
+- [ ] Smart Reply — generate 3 suggestions for a message
+- [ ] Language Identification — detect language + confidence
+- [ ] Translation — download language pack, translate offline
+- [ ] ChipGroup UI to switch between demos
+
+#### 09-B: MediaPipe Playground
+- [ ] Theory: MediaPipe Tasks API, BaseOptions, delegates
+- [ ] CameraX integration with ImageAnalysis use case
+- [ ] Object Detection — bounding boxes on live camera
+- [ ] Face Landmark Detection — 478-point mesh overlay
+- [ ] Hand Landmark Detection — finger skeleton overlay
+- [ ] Gesture Recognition — classify hand gestures
+- [ ] Live toggle between detectors without restarting camera
+
+#### 09-C: TFLite Playground
+- [ ] Theory: TFLite Interpreter, delegates (GPU, NNAPI, CPU)
+- [ ] MobileNet V3 — image classification from gallery
+- [ ] GPU delegate setup — measure speedup vs CPU
+- [ ] MobileBERT — SMS spam detection
+- [ ] Custom URL phishing model — feature engineering + inference
+- [ ] Benchmark CPU vs GPU vs NNAPI inference time
+
+#### 09-D: Gemini Nano (AICore)
+- [ ] Theory: AICore, supported devices, availability check
+- [ ] `GenerativeModel.checkAvailability()` + handle all states
+- [ ] Graceful fallback card for unsupported devices
+- [ ] Summarisation API — 3-bullet article summary
+- [ ] Proofreading API — grammar correction
+- [ ] Free-form chat with `sendMessageStream`
+- [ ] Compare quality vs Gemma 2B (MediaPipe)
+
+#### 09-E: ONNX Runtime Playground
+- [ ] Theory: ONNX format, ONNX Runtime for Android setup
+- [ ] Whisper Tiny — record audio, transcribe speech to text
+- [ ] Mel spectrogram preprocessing for Whisper
+- [ ] Sentence Transformer (all-MiniLM-L6) — semantic similarity
+- [ ] Compare ONNX vs TFLite for same model type
+
+#### 09-F: Benchmark Screen
+- [ ] Fixed benchmark input (same text/image for all models)
+- [ ] Cold start vs warm inference timing
+- [ ] Memory usage per model (`Debug.MemoryInfo`)
+- [ ] Results table: model | output | cold | warm | RAM | size
+- [ ] Device capability matrix shown in-app
+- [ ] Recommendation card based on use case
 
 ---
 

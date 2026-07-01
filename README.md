@@ -32,6 +32,7 @@ A **News Reader App** — simple enough to learn from, realistic enough to repre
 | `:feature-bookmarks` | On-demand | User downloads only if they want bookmarks |
 | `:feature-premium` | Conditional | Only delivered if user has premium entitlement |
 | `:feature-ai-chat` | On-demand | Downloaded when user opens AI Chat; includes LLM model |
+| `:feature-ai-explorer` | On-demand | Side-by-side comparison of all on-device AI models |
 
 ---
 
@@ -170,6 +171,83 @@ Mini-project: Add `:feature-ai-chat` as an on-demand dynamic module. When the us
 
 ---
 
+### Module 09 — On-Device AI Model Explorer
+**Goal:** Integrate and compare every major on-device AI ecosystem in one app —
+understand what each model does, how to wire it up, and how it performs on real hardware.
+
+The module is structured as a **tabbed explorer UI** — one tab per AI ecosystem.
+Each tab has an input area, a run button, and an output panel showing the result + inference time.
+
+#### Sub-module 09-A — ML Kit
+Topics:
+- Text Classification — classify news article as sports/tech/politics
+- Entity Extraction — pull URLs, phone numbers, addresses from raw text
+- Smart Reply — suggest 3 replies to a message
+- Language Identification — detect language of pasted text
+- Translation — translate detected text to English
+- On-device vs cloud API trade-offs
+
+Mini-project: "ML Kit Playground" tab — paste any text, tap a chip (classify / extract / reply / translate), see results in < 100ms.
+
+#### Sub-module 09-B — MediaPipe
+Topics:
+- LLM Inference API — load Gemma 2B, stream tokens
+- Text Classification — custom classifier via MediaPipe Tasks
+- Image Classification — classify photo from camera or gallery
+- Object Detection — real-time camera object detection
+- Face Landmark Detection — 478 face points on camera preview
+- Hand Gesture Recognition — detect thumbs up, pointing etc.
+- `BaseOptions` and `TaskOptions` — how MediaPipe Tasks are configured
+
+Mini-project: "MediaPipe Playground" tab — camera preview with a toggle row (object / face / hand / gesture). Swap detectors live without restarting the camera.
+
+#### Sub-module 09-C — TensorFlow Lite
+Topics:
+- Loading a `.tflite` model from assets
+- `Interpreter` API — input/output tensors
+- Feature engineering for non-image models (URL classifier, spam detector)
+- GPU delegate — speed up inference on Snapdragon/Mali GPUs
+- NNAPI delegate — use device NPU
+- Benchmarking: CPU vs GPU vs NNAPI inference time
+- MobileBERT for question answering
+- Custom model: train a phishing URL classifier, export to TFLite, run on-device
+
+Mini-project: "TFLite Playground" tab — three demos: image classification (MobileNet), spam SMS detection (MobileBERT), and URL phishing score (custom feature-engineering model).
+
+#### Sub-module 09-D — Gemini Nano (AICore)
+Topics:
+- Checking AICore availability at runtime (`AvailabilityInfo`)
+- Graceful fallback when device doesn't support Gemini Nano
+- `GenerativeModel` with `generateContent` and `generateContentStream`
+- Summarisation API — summarise a long news article in 3 bullets
+- Proofreading API — grammar + style correction
+- Comparing Gemini Nano output quality vs Gemma 2B (MediaPipe)
+- Supported devices: Pixel 8+, Samsung S24+
+
+Mini-project: "Gemini Nano" tab — only enabled on supported devices (shows "not supported" card otherwise). Demos: summarise article, proofread text, free-form chat.
+
+#### Sub-module 09-E — ONNX Runtime
+Topics:
+- ONNX Runtime for Android setup
+- Loading `.onnx` models from assets
+- Running Whisper Tiny for speech-to-text
+- Sentence Transformers for semantic similarity (find similar news articles)
+- Comparing ONNX vs TFLite for the same model
+
+Mini-project: "ONNX Playground" tab — record voice, transcribe with Whisper Tiny. Type two sentences, get similarity score with Sentence Transformer.
+
+#### Sub-module 09-F — Benchmarking & Device Comparison
+Topics:
+- Measuring inference latency (cold start vs warm)
+- Memory usage per model
+- Battery impact of continuous inference
+- Results table: emulator vs mid-range device vs Pixel 8
+- Which model to pick for which use case
+
+Mini-project: Benchmark screen — runs the same input through all available models and renders a comparison table (latency, accuracy, model size, RAM used).
+
+---
+
 ## Progress Tracker
 
 | Module | Topic | Status |
@@ -182,6 +260,12 @@ Mini-project: Add `:feature-ai-chat` as an on-demand dynamic module. When the us
 | 06 | Conditional Delivery & Module Removal | 🔲 Not started |
 | 07 | Build, Sign & Ship the AAB | 🔲 Not started |
 | 08 | Local Gen AI (MediaPipe + Gemini Nano) | 🔲 Not started |
+| 09-A | ML Kit Playground | 🔲 Not started |
+| 09-B | MediaPipe Playground | 🔲 Not started |
+| 09-C | TensorFlow Lite Playground | 🔲 Not started |
+| 09-D | Gemini Nano (AICore) | 🔲 Not started |
+| 09-E | ONNX Runtime Playground | 🔲 Not started |
+| 09-F | Benchmarking & Device Comparison | 🔲 Not started |
 
 ---
 
