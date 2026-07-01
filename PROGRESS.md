@@ -16,7 +16,7 @@ Daily log of what has been implemented and what is remaining.
 | 06 | Conditional Delivery & Module Removal | 🔲 Not started | — | — |
 | 07 | Build, Sign & Ship the AAB | 🔲 Not started | — | — |
 
-**Overall progress: 0 / 7 modules complete**
+**Overall progress: 0 / 8 modules complete**
 
 ---
 
@@ -93,6 +93,24 @@ _Nothing yet — start with Module 01!_
 - [ ] `bundletool install-apks` — test on device/emulator
 - [ ] Simulate on-demand install with bundletool
 - [ ] ProGuard/R8 rules for multi-module
+- [ ] README + PDF learning guide
+
+---
+
+### 🔲 Module 08 — Local Gen AI (MediaPipe + Gemini Nano)
+- [ ] Theory: MediaPipe LLM Inference API vs Gemini Nano / AICore
+- [ ] Theory: quantised models (INT4 vs FP32), model size vs quality trade-offs
+- [ ] `:feature-ai-chat` dynamic-feature module setup
+- [ ] `AndroidManifest.xml` with `<dist:on-demand/>`
+- [ ] `ChatRepositoryFactory` — detect best available inference engine
+- [ ] `MediaPipeChatRepository` — load Gemma 2B, `generateAsync` with token streaming
+- [ ] `GeminiNanoChatRepository` — `GenerativeModel` with `sendMessageStream`
+- [ ] `ChatViewModel` — manage model lifecycle, expose `StateFlow<ChatUiState>`
+- [ ] `ChatFragment` — streaming chat UI with typing indicator
+- [ ] Model caching — load once, reuse across messages
+- [ ] RAM check — warn user if device has < 4 GB free
+- [ ] Inference on `Dispatchers.IO` — never block main thread
+- [ ] Test with Gemma 2B model on emulator / real device
 - [ ] README + PDF learning guide
 
 ---

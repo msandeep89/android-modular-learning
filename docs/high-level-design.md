@@ -107,3 +107,4 @@ flowchart LR
 | `:feature-search` | `com.android.library` | Install-time | At install |
 | `:feature-bookmarks` | `com.android.dynamic-feature` | On-demand | When user requests |
 | `:feature-premium` | `com.android.dynamic-feature` | Conditional | If API >= 26 |
+| `:feature-ai-chat` | `com.android.dynamic-feature` | On-demand | When user opens AI Chat (includes LLM model ~1.5 GB) |

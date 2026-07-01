@@ -31,6 +31,7 @@ A **News Reader App** — simple enough to learn from, realistic enough to repre
 | `:feature-search` | Install-time | Search — always available |
 | `:feature-bookmarks` | On-demand | User downloads only if they want bookmarks |
 | `:feature-premium` | Conditional | Only delivered if user has premium entitlement |
+| `:feature-ai-chat` | On-demand | Downloaded when user opens AI Chat; includes LLM model |
 
 ---
 
@@ -149,6 +150,26 @@ Mini-project: Build a signed AAB of the News Reader app, use bundletool to simul
 
 ---
 
+### Module 08 — Local Gen AI with MediaPipe & Gemini Nano
+**Goal:** Run a large language model fully on-device — no internet, no API key, no server cost.
+
+Topics:
+- **Two approaches to on-device LLM on Android:**
+  - **MediaPipe LLM Inference API** — run Gemma 2B/3B, Phi-2, Mistral on any Android 8+ device
+  - **Android AICore / Gemini Nano** — system-level model on Android 14+ Pixel/Samsung devices
+- Loading a model from assets or downloading at runtime
+- Streaming token-by-token responses (`generateAsync`)
+- Chat UI — message bubbles, typing indicator, streaming text
+- Memory and performance considerations (model size, RAM, quantisation)
+- Offloading inference to a background coroutine (never block the main thread)
+- Model caching — load once, reuse across sessions
+- Packaging as an **on-demand dynamic feature** (model files are 1–4 GB)
+- Fallback strategy: use Gemini Nano if available, else MediaPipe
+
+Mini-project: Add `:feature-ai-chat` as an on-demand dynamic module. When the user opens it, the module + model download in the background. Once ready, a chat screen lets the user ask questions about news articles — fully on-device, no API calls.
+
+---
+
 ## Progress Tracker
 
 | Module | Topic | Status |
@@ -160,6 +181,7 @@ Mini-project: Build a signed AAB of the News Reader app, use bundletool to simul
 | 05 | Play Feature Delivery (Dynamic Modules) | 🔲 Not started |
 | 06 | Conditional Delivery & Module Removal | 🔲 Not started |
 | 07 | Build, Sign & Ship the AAB | 🔲 Not started |
+| 08 | Local Gen AI (MediaPipe + Gemini Nano) | 🔲 Not started |
 
 ---
 

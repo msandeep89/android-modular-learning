@@ -1,5 +1,7 @@
 # Low Level Design — Per Module Detail
 
+> Jump to: [Module 08 — Local Gen AI](#module-08--local-gen-ai-mediapipe--gemini-nano)
+
 ---
 
 ## Module 01 — Multi-Module Project Setup
@@ -231,3 +233,152 @@ flowchart TD
 ```
 
 **Key files:** `build.gradle.kts` (signingConfigs), `keystore.jks`, `bundletool` CLI
+
+---
+
+## Module 08 — Local Gen AI (MediaPipe + Gemini Nano)
+
+### Two on-device AI paths
+
+```mermaid
+flowchart TD
+    USER["User opens AI Chat"] --> CHECK_MOD["Is :feature-ai-chat installed?\nSplitInstallManager"]
+
+    CHECK_MOD -->|no| DOWNLOAD_MOD["Download module + model\n~1-4 GB via Play Store"]
+    DOWNLOAD_MOD --> READY["Module installed\nNavigate to ChatFragment"]
+    CHECK_MOD -->|yes| READY
+
+    READY --> DETECT["Detect best inference engine"]
+
+    subgraph ENGINE["Inference Engine Selection"]
+        DETECT -->|Android 14+ Pixel/Samsung| NANO["Gemini Nano\nvia Android AICore\n(system model, always available)"]
+        DETECT -->|Android 8+, any device| MEDIAPIPE["MediaPipe LLM Inference\nGemma 2B (quantised, ~1.5 GB)\nor Phi-2 (~1.1 GB)"]
+    end
+
+    NANO --> INFER["LlmInferenceSession\nor InferenceSession"]
+    MEDIAPIPE --> INFER
+
+    INFER --> STREAM["generateAsync(prompt)\nstreams tokens one by one"]
+    STREAM --> UI["ChatFragment\nupdates TextView token-by-token"]
+```
+
+---
+
+### MediaPipe LLM Inference flow
+
+```mermaid
+flowchart TD
+    subgraph SETUP["One-time setup (on first launch)"]
+        ASSET["Model file in assets/\ngemma-2b-it-cpu-int4.bin"]
+        LOAD["LlmInference.create(context, options)\n(runs on IO dispatcher — takes 5-15s)"]
+        CACHE["Keep instance alive\nin ViewModel (don't recreate per message)"]
+        ASSET --> LOAD --> CACHE
+    end
+
+    subgraph CHAT["Per-message inference"]
+        INPUT["User types message"] --> BUILD["Build prompt\nwith chat history context"]
+        BUILD --> ASYNC["llmInference.generateAsync(\n  prompt,\n  resultListener = { partial, done ->\n    _uiState.update { it + partial }\n  }\n)"]
+        ASYNC --> TOKENS["Partial tokens streamed\nto StateFlow"]
+        TOKENS --> COMPOSE["LazyColumn re-renders\nas tokens arrive"]
+    end
+
+    CACHE --> ASYNC
+```
+
+---
+
+### Gemini Nano (AICore) flow — Android 14+
+
+```mermaid
+flowchart TD
+    subgraph AVAIL["Check availability"]
+        CHECK["GenerativeModel\n  .checkAvailability(context)"]
+        CHECK -->|AVAILABLE| USE["Use Gemini Nano"]
+        CHECK -->|UNAVAILABLE| FALL["Fallback to MediaPipe"]
+        CHECK -->|DOWNLOADING| WAIT["Wait + show progress"]
+    end
+
+    subgraph INFERENCE["Gemini Nano inference"]
+        MODEL["GenerativeModel(\n  modelName = 'gemini-nano'\n)"]
+        SESSION["model.startChat(\n  history = previousMessages\n)"]
+        SEND["session.sendMessageStream(prompt)"]
+        COLLECT["flow.collect { chunk ->\n  append chunk.text to UI\n}"]
+        MODEL --> SESSION --> SEND --> COLLECT
+    end
+
+    USE --> MODEL
+```
+
+---
+
+### Architecture of :feature-ai-chat
+
+```mermaid
+flowchart TD
+    subgraph FEATURE[":feature-ai-chat (dynamic-feature module)"]
+        subgraph UI["ui/"]
+            CHAT_FRAG["ChatFragment\n@AndroidEntryPoint"]
+            CHAT_VM["ChatViewModel\n@HiltViewModel"]
+            MSG_ADAPTER["MessageAdapter\n(RecyclerView)"]
+            CHAT_FRAG --> CHAT_VM
+            CHAT_FRAG --> MSG_ADAPTER
+        end
+
+        subgraph DOMAIN["domain/"]
+            CHAT_REPO["interface ChatRepository\n  fun sendMessage(prompt): Flow&lt;String&gt;"]
+        end
+
+        subgraph DATA["data/"]
+            MEDIAPIPE_REPO["MediaPipeChatRepository\n  implements ChatRepository\n  uses LlmInference"]
+            NANO_REPO["GeminiNanoChatRepository\n  implements ChatRepository\n  uses GenerativeModel"]
+            FACTORY["ChatRepositoryFactory\n  returns best available impl"]
+            FACTORY --> MEDIAPIPE_REPO
+            FACTORY --> NANO_REPO
+        end
+
+        subgraph MODEL_FILE["assets/"]
+            BIN["gemma-2b-it-cpu-int4.bin\n(~1.5 GB — packaged in AAB,\ndelivered only with this module)"]
+        end
+    end
+
+    CHAT_VM --> CHAT_REPO
+    CHAT_REPO --> FACTORY
+    FACTORY -->|loads| BIN
+```
+
+---
+
+### Memory & performance rules
+
+| Rule | Why |
+|------|-----|
+| Load model once in ViewModel, not per message | Model init takes 5–15s and uses ~1.5 GB RAM |
+| Run inference on `Dispatchers.IO` | LLM inference blocks the thread — never run on Main |
+| Use `generateAsync` with streaming | User sees response immediately, not after full generation |
+| Clear model in `onCleared()` | Release RAM when user leaves the screen |
+| Quantised INT4 model (not FP32) | ~4x smaller file, ~3x faster, minimal quality loss |
+| Show RAM warning if device < 4 GB | Gemma 2B needs ~2 GB free RAM to run |
+
+---
+
+### AndroidManifest for :feature-ai-chat
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution">
+
+    <!-- On-demand: downloaded only when user opens AI Chat -->
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_feature_ai_chat">
+        <dist:delivery>
+            <dist:on-demand />
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+</manifest>
+```
+
+**Key files:** `ChatFragment.kt`, `ChatViewModel.kt`, `MediaPipeChatRepository.kt`,
+`GeminiNanoChatRepository.kt`, `ChatRepositoryFactory.kt`, `feature-ai-chat/AndroidManifest.xml`
