@@ -15,8 +15,9 @@ Daily log of what has been implemented and what is remaining.
 | 05 | Play Feature Delivery (Dynamic Modules) | 🔲 Not started | — | — |
 | 06 | Conditional Delivery & Module Removal | 🔲 Not started | — | — |
 | 07 | Build, Sign & Ship the AAB | 🔲 Not started | — | — |
+| 10 | Android Interview Design Questions | ✅ Done | 2026-07-01 | 2026-07-01 |
 
-**Overall progress: 1 / 9 modules complete**
+**Overall progress: 2 / 10 modules complete**
 
 ---
 
@@ -174,6 +175,17 @@ Daily log of what has been implemented and what is remaining.
 
 ---
 
+---
+
+### ✅ Module 10 — Android Interview Design Questions
+- [x] `10-A-architecture-patterns/README.md` — MVVM vs MVI, Clean Architecture, inter-module navigation
+- [x] `10-B-design-patterns/README.md` — Singleton, Builder, Observer, Strategy, Facade, Decorator
+- [x] `10-C-system-design/README.md` — Offline-first, real-time chat, search autocomplete, payments SDK, feature flags
+- [x] `10-D-concurrency-patterns/README.md` — StateFlow vs SharedFlow vs LiveData, structured concurrency, race conditions, thread-safe state
+- [x] `10-E-performance-patterns/README.md` — DiffUtil, memory leaks, Paging 3, RecyclerView optimisation
+
+---
+
 ## Daily Log
 
 ### 2026-07-01
@@ -187,6 +199,9 @@ Daily log of what has been implemented and what is remaining.
   - Single Activity (MainActivity) + NavController + BottomNavigationView wired
   - Shared Article model and Result<T>/UiState<T> in :core
   - Dynamic feature manifests with correct delivery mode per module
+- Completed Module 10: Android Interview Design Questions
+  - 5 sub-modules: Architecture, Design Patterns, System Design, Concurrency, Performance
+  - Full Kotlin code examples for every question with follow-up answers
 
 ---
 
