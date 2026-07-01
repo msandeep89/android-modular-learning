@@ -1,0 +1,29 @@
+# Android build outputs
+*.apk
+*.aab
+*.apks
+*.ap_
+*.dex
+
+# Gradle
+.gradle/
+build/
+**/build/
+local.properties
+*.iml
+
+# Android Studio
+.idea/
+*.iws
+*.ipr
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing
+*.jks
+*.keystore
+keystore.properties
+
+# OS
+.DS_Store
