@@ -1,3 +1,4 @@
+
 // Root build file — configuration here applies to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application)    apply false
@@ -5,6 +6,6 @@ plugins {
     alias(libs.plugins.android.dynamic.feature) apply false
     alias(libs.plugins.kotlin.android)         apply false
     alias(libs.plugins.hilt)                   apply false
-    alias(libs.plugins.kotlin.kapt)            apply false
+    alias(libs.plugins.ksp)                    apply false
     alias(libs.plugins.navigation.safeargs)    apply false
 }

@@ -2,6 +2,7 @@
 # Build tools
 agp                     = "8.5.0"
 kotlin                  = "2.0.0"
+ksp                     = "2.0.0-1.0.24"
 
 # AndroidX Core
 core-ktx                = "1.13.1"
@@ -86,4 +87,4 @@ android-dynamic-feature = { id = "com.android.dynamic-feature", version.ref = "a
 kotlin-android          = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt                    = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 navigation-safeargs     = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
-kotlin-kapt             = { id = "org.jetbrains.kotlin.kapt",  version.ref = "kotlin" }
+ksp                     = { id = "com.google.devtools.ksp",    version.ref = "ksp" }
